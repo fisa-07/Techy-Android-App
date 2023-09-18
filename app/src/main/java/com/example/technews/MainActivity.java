@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.kwabenaberko.newsapilib.NewsApiClient;
 import com.kwabenaberko.newsapilib.models.request.EverythingRequest;
 import com.kwabenaberko.newsapilib.models.response.ArticleResponse;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> news_url = new ArrayList<>();
     private ArrayList<String> news_source = new ArrayList<>();
     private ArrayList<String> news_author = new ArrayList<>();
+    private ArrayList<String> news_image = new ArrayList<>();
     ProgressBar progress;
     ListView list;
 
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         getNews();
 
-        CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(),news_title,news_source,news_author);
+        CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(),news_title,news_source,news_author,news_image);
         list.setAdapter(customAdapter);
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(ArticleResponse response) {
                         progress.setVisibility(View.GONE);
-                        for(int i = 0;i < 50;i++){
+                        for(int i = 0;i < 80;i++){
                             String title = response.getArticles().get(i).getTitle();
                             String source = response.getArticles().get(i).getPublishedAt();
                             source = source.substring(0,10);
@@ -71,17 +73,20 @@ public class MainActivity extends AppCompatActivity {
                                 author = "Miscellaneous";
                             }
                             String newsurl = response.getArticles().get(i).getUrl();
+                            String image = response.getArticles().get(i).getUrlToImage();
 
                             news_title.add(title);
                             news_source.add(source);
                             news_author.add(author);
                             news_url.add(newsurl);
+                            news_image.add(image);
                         }
                     }
                     @Override
                     public void onFailure(Throwable throwable) {
                         String msg = throwable.getMessage();
                         Toast.makeText(MainActivity.this,msg,Toast.LENGTH_SHORT).show();
+
                     }
                 }
         );
